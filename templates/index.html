@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Amenities {% endblock %}</h1>
+    <form method="post" action="/refresh">
+        <label for="amenity">Choose an amenity:</label>
+        <select name="amenity" id="amenity">
+            {% for amenity in amenities %}
+                <option value="{{ amenity[0] }}">{{ amenity[0] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h1>{%block title%} Results {%endblock%}</h1>
+    {%for item in query%}
+    <div>
+        <h2>{{item['name']}}</h2>
+        <p></p>
+    </div>
+    {%endfor%}
+{% endblock %}
