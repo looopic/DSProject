@@ -1,5 +1,9 @@
 # Readme
 
+## Prerequisites
+1. Have osm2pgsql installed (manual: https://learnosm.org/en/osm-data/osm2pgsql/ download:             https://osm2pgsql.org/doc/install.html#installing-on-windows)
+2. Have POSTgreSQL installed (manual at next chapter)
+
 ## Prepare your POSTgreSQL database
 1. Download POSTgreSQL
 2. Install POSTgreSQL with all standard parameters

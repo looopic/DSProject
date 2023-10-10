@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 REM Define default values for parameters
 set "db=gisdb"
-set "username=postgres"
+set "username=gisdb"
 
 REM Check for and process command line arguments
 if not "%~1"=="" set "db=%~1"
