@@ -12,10 +12,11 @@
 5. Change the "scram-sha-256" to "trust" for the first three entries ("local" is for Unix domain socket connections only, IPv4 local connections and IPv6 local connections)
 6. Save the changes
 7. Open services.msc and restart the postgresql-x64-16 service
-8. Open pgAdmin 4 and open the Server
-9. Create a new database
-10. Open the query tool for the database and enter "CREATE EXTENSION postgis;"
-11. Execute the query.
+8. Add psql to Path (C:\Program Files\PostgreSQL\16\bin)
+9. Open pgAdmin 4 and open the Server
+10. Create a new database
+11. Open the query tool for the database and enter "CREATE EXTENSION postgis;"
+12. Execute the query.
 
 ## download_osm.bat
 This batch file will download the newest version of the .osm.pbf file of switzerland from geofabrik.de
