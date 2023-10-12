@@ -1,7 +1,6 @@
 import os
 import psycopg2
 from flask import Flask, render_template, request
-import geopandas
 
 app = Flask(__name__)
 
@@ -31,15 +30,16 @@ def refresh():
 @app.route('/amenity', methods=['GET','POST'])
 def get_amenity():
     selected_amenity = request.form['amenity']
+    query_st='SELECT * FROM planet_osm_polygon WHERE amenity=\''+selected_amenity+'\';'
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT DISTINCT amenity FROM planet_osm_polygon;')
     amenities = cur.fetchall()
-    cur.execute('SELECT * FROM planet_osm_polygon WHERE amenity='+selected_amenity+';')
+    cur.execute(query_st)
     query=cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('index.html', amenities=amenities, query=query)
+    return render_template('index.html', amenities=amenities, query=query, map=map)
 
 if __name__ == '__main__':
     app.run()

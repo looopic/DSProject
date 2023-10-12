@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>{% block title %} Amenities {% endblock %}</h1>
-    <form method="post" action="/refresh">
+    <form method="post" action="/amenity">
         <label for="amenity">Choose an amenity:</label>
         <select name="amenity" id="amenity">
             {% for amenity in amenities %}
@@ -12,11 +12,15 @@
         <button type="submit">Submit</button>
     </form>
 
-    <h1>{%block title%} Results {%endblock%}</h1>
+    <h1>Results</h1>
+
+
     {%for item in query%}
+    {%if item[38] is not none %}
     <div>
-        <h2>{{item['name']}}</h2>
+        <h2>{{item[38]}}</h2>
         <p></p>
     </div>
+    {%endif%}
     {%endfor%}
 {% endblock %}
