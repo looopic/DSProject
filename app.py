@@ -39,7 +39,7 @@ def get_amenity():
     query=cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('index.html', amenities=amenities, query=query, map=map)
+    return render_template('index.html', amenities=amenities, query=query)
 
 if __name__ == '__main__':
     app.run()
