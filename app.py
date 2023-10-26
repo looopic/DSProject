@@ -22,19 +22,22 @@ def index():
 def refresh():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='1';")
+    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='2';")
     entries= cur.fetchall()
     cur.close()
     conn.close()
+    print(len(entries))
     return entries
 
 @app.route('/amenity', methods=['GET','POST'])
 def get_amenity():
-    selected_amenity = request.form['amenity']
+    selected_amenity = request.form['country']
+    selected_amenity =selected_amenity[1:-1].split(',')
+    print(selected_amenity[0:5])
     query_st='SELECT * FROM planet_osm_polygon WHERE osm_id=\''+selected_amenity[0]+'\';'
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='1';")
+    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='2';")
     countries = cur.fetchall()
     cur.execute(query_st)
     query=cur.fetchall()
@@ -48,7 +51,7 @@ def get_amenity():
     m.get_root().height = "600px"
     iframe = m.get_root()._repr_html_()
 
-    return render_template('index.html', countries=countries, query=query, country=selected_amenity, iframe=iframe)
+    return render_template('country.html', country=selected_amenity, iframe=iframe)
 
 if __name__ == '__main__':
     app.run()

@@ -23,9 +23,4 @@ REM Import OSM data into PostgreSQL using osm2pgsql
 echo Importing OSM data into PostgreSQL...
 osm2pgsql -c -d %db% -U %username% -H localhost -S "%userprofile%\Downloads\default.style" "%userprofile%\Downloads\switzerland-latest.osm.pbf"
 
-REM Run SQL commands to create columns and compute data
-echo Creating columns and computing data...
-psql -U %username% -d %db% -c "alter table planet_osm_line add column ST_AsText varchar; alter table planet_osm_point add column ST_AsText varchar; alter table planet_osm_point add column ST_X varchar; alter table planet_osm_point add column ST_Y varchar; alter table planet_osm_polygon add column ST_AsText varchar; alter table planet_osm_polygon add column ST_Area varchar; alter table planet_osm_roads add column ST_AsText varchar;"
-psql -U %username% -d %db% -c "update planet_osm_line set ST_AsText=ST_AsText(way); update planet_osm_point set ST_AsText=ST_AsText(way); update planet_osm_point set ST_X=ST_X(way); update planet_osm_point set ST_Y=ST_Y(way); update planet_osm_polygon set ST_AsText=ST_AsText(way); update planet_osm_polygon set ST_Area=ST_Area(way); update planet_osm_roads set ST_AsText=ST_AsText(way);"
-
 echo Process completed.

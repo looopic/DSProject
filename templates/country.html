@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="country" visibility="invisible">
+        <h1>Selected Country: {{country[38]}}</h1>
+
+        <p>You've selected {{country[38]}}. This site will show you different key performance indices for this country.</p>
+
+        {{ iframe|safe }}
+    </div>
+{% endblock %}
