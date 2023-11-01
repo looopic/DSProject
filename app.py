@@ -6,6 +6,8 @@ import geopandas as gpd
 
 app = Flask(__name__)
 
+
+#postgresql database connection as function to clean up the code a bit.
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
                             database=os.environ['DB_NAME'],
@@ -13,6 +15,7 @@ def get_db_connection():
                             password=os.environ['DB_PASSWORD'])
     return conn
 
+#home directory of website. You're able to select a country.
 @app.route('/', methods=['GET','POST'])
 def index():
     countries=refresh()
@@ -20,6 +23,7 @@ def index():
         return get_amenity()
     return render_template('index.html', countries=countries)
 
+#refresh function: selects all countries
 def refresh():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -30,6 +34,7 @@ def refresh():
     print(len(entries))
     return entries
 
+#Display of country's details
 @app.route('/amenity', methods=['GET','POST'])
 def get_amenity():
     selected_amenity = request.form['country']
