@@ -3,6 +3,7 @@ import psycopg2
 from flask import Flask, render_template, request
 import folium
 import geopandas as gpd
+import wikipedia
 
 app = Flask(__name__)
 
@@ -14,6 +15,19 @@ def get_db_connection():
                             user=os.environ['DB_USERNAME'],
                             password=os.environ['DB_PASSWORD'])
     return conn
+
+#creates map of country
+def get_map(gdf):
+    centroid = gdf.to_crs(epsg='4326').unary_union.centroid
+    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6)
+    folium.GeoJson(gdf.to_crs(epsg='4326')).add_to(m)
+    m.get_root().width = "800px"
+    m.get_root().height = "600px"
+    iframe = m.get_root()._repr_html_()
+    return iframe
+
+def get_wiki(country):
+    return wikipedia.page(country)
 
 #home directory of website. You're able to select a country.
 @app.route('/', methods=['GET','POST'])
@@ -39,30 +53,12 @@ def refresh():
 def get_amenity():
     selected_amenity = request.form['country']
     selected_amenity =selected_amenity[1:-1].split(',')
-    #print(selected_amenity[0:5])
     query_st='SELECT * FROM planet_osm_polygon WHERE osm_id=\''+selected_amenity[0]+'\';'
     conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='2';")
-    countries = cur.fetchall()
-    cur.execute(query_st)
-    query=cur.fetchall()
     gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
-    cur.close()
     conn.close()
 
-    centroid = gdf.to_crs(epsg='4326').unary_union.centroid
-
-
-    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6)
-    folium.GeoJson(gdf.to_crs(epsg='4326')).add_to(m)
-
-    # set the iframe width and height
-    m.get_root().width = "800px"
-    m.get_root().height = "600px"
-    iframe = m.get_root()._repr_html_()
-
-    return render_template('country.html', country=selected_amenity, iframe=iframe)
+    return render_template('country.html', country=selected_amenity, iframe=get_map(gdf), wiki=get_wiki(selected_amenity[38]))
 
 if __name__ == '__main__':
     app.run()
