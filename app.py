@@ -2,6 +2,7 @@ import os
 import psycopg2
 from flask import Flask, render_template, request
 import folium
+import geopandas as gpd
 
 app = Flask(__name__)
 
@@ -22,7 +23,7 @@ def index():
 def refresh():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='2';")
+    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='2' ORDER BY NAME;")
     entries= cur.fetchall()
     cur.close()
     conn.close()
@@ -33,7 +34,7 @@ def refresh():
 def get_amenity():
     selected_amenity = request.form['country']
     selected_amenity =selected_amenity[1:-1].split(',')
-    print(selected_amenity[0:5])
+    #print(selected_amenity[0:5])
     query_st='SELECT * FROM planet_osm_polygon WHERE osm_id=\''+selected_amenity[0]+'\';'
     conn = get_db_connection()
     cur = conn.cursor()
@@ -41,10 +42,15 @@ def get_amenity():
     countries = cur.fetchall()
     cur.execute(query_st)
     query=cur.fetchall()
+    gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
     cur.close()
     conn.close()
-    
-    m = folium.Map()
+
+    centroid = gdf.to_crs(epsg='4326').unary_union.centroid
+
+
+    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6)
+    folium.GeoJson(gdf.to_crs(epsg='4326')).add_to(m)
 
     # set the iframe width and height
     m.get_root().width = "800px"
