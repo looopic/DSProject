@@ -22,4 +22,4 @@ shapely==2.0.1
 six==1.16.0
 tzdata==2023.3
 Werkzeug==3.0.0
-wikipedia
+wikipedia==1.4.0
