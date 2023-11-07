@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW water AS
+CREATE MATERIALIZED VIEW water AS
 SELECT
     osm_id,
     ST_Union(way) AS geom
@@ -6,7 +6,7 @@ FROM planet_osm_polygon
 WHERE "natural" = 'water'
 GROUP BY osm_id;
 
-CREATE OR REPLACE VIEW forest AS
+CREATE MATERIALIZED VIEW forest AS
 SELECT
     osm_id,
     ST_Union(way) AS geom
@@ -14,7 +14,7 @@ FROM planet_osm_polygon
 WHERE landuse = 'forest'
 GROUP BY osm_id;
 
-CREATE OR REPLACE VIEW building AS
+CREATE MATERIALIZED VIEW building AS
 SELECT
     osm_id,
     ST_Union(way) AS geom
@@ -36,3 +36,9 @@ LEFT JOIN water w ON ST_Intersects(way,w.geom)
 LEFT JOIN forest f ON ST_Intersects(way,f.geom)
 LEFT JOIN building b ON ST_Intersects(way,b.geom)
 WHERE admin_level='8';
+
+REFRESH MATERIALIZED VIEW water;
+REFRESH MATERIALIZED VIEW forest;
+REFRESH MATERIALIZED VIEW building;
+
+SELECT * FROM communities;
