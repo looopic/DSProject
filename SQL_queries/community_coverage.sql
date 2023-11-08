@@ -1,28 +1,34 @@
 CREATE MATERIALIZED VIEW water AS
 SELECT
-    osm_id,
-    ST_Union(way) AS geom
-FROM planet_osm_polygon
-WHERE "natural" = 'water'
-GROUP BY osm_id;
+	1 as osm_id,
+	ST_Union(
+		ARRAY(
+			SELECT way
+			FROM planet_osm_polygon 
+			WHERE "natural" = 'water')) 
+	AS geom;
 
 CREATE MATERIALIZED VIEW forest AS
 SELECT
-    osm_id,
-    ST_Union(way) AS geom
-FROM planet_osm_polygon
-WHERE landuse = 'forest'
-GROUP BY osm_id;
+	1 AS osm_id,
+    ST_Union(
+		ARRAY(
+			SELECT way 
+			FROM planet_osm_polygon 
+			WHERE landuse = 'forest'))
+	AS geom;
 
 CREATE MATERIALIZED VIEW building AS
 SELECT
-    osm_id,
-    ST_Union(way) AS geom
-FROM planet_osm_polygon
-WHERE building IS NOT NULL
-GROUP BY osm_id;
+	1 AS osm_id,
+    ST_Union(
+		ARRAY(
+			SELECT way 
+			FROM planet_osm_polygon 
+			WHERE landuse IN ('commercial','education','industrial','residential','retail','institutional')))
+	AS geom;
 
-CREATE OR REPLACE VIEW communities AS
+CREATE MATERIALIZED VIEW communities AS
 SELECT
 	c.osm_id AS osm_id,
 	c.name AS name,
@@ -40,5 +46,6 @@ WHERE admin_level='8';
 REFRESH MATERIALIZED VIEW water;
 REFRESH MATERIALIZED VIEW forest;
 REFRESH MATERIALIZED VIEW building;
+REFRESH MATERIALIZED VIEW communities;
 
 SELECT * FROM communities;
