@@ -17,10 +17,32 @@ def get_db_connection():
     return conn
 
 #creates map of country
-def get_map(gdf):
+def get_map(gdf,water,forest,building):
     centroid = gdf.to_crs(epsg='4326').unary_union.centroid
     m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6)
-    folium.GeoJson(gdf.to_crs(epsg='4326')).add_to(m)
+
+    folium.GeoJson(gdf.to_crs(epsg='4326'),overlay=False,control=False,style_function=lambda feature:{
+        "fill": False,
+        "color": "black"
+    },).add_to(m)
+    folium.GeoJson(water,name="Water",style_function=lambda feature:{
+        "color": "#627fde",
+        "stroke": False,
+        "fillOpacity": "0.8"
+    },).add_to(m)
+    folium.GeoJson(forest,name="Forest",style_function=lambda feature:{
+        "color": "#228a3b",
+        "stroke": False,
+        "fillOpacity": "0.8"
+    }).add_to(m)
+    folium.GeoJson(building,name="Buildings",style_function=lambda feature:{
+        "color": "#949494",
+        "stroke": False,
+        "fillOpacity": "0.8"
+    }).add_to(m)
+
+    folium.LayerControl().add_to(m)
+
     m.get_root().width = "800px"
     m.get_root().height = "600px"
     iframe = m.get_root()._repr_html_()
@@ -56,9 +78,12 @@ def get_amenity():
     query_st='SELECT * FROM planet_osm_polygon WHERE osm_id=\''+selected_amenity[0]+'\';'
     conn = get_db_connection()
     gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
+    water_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM water;",conn,geom_col='geom',index_col='osm_id')
+    forest_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM forest;",conn,geom_col='geom',index_col='osm_id')
+    building_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM building;",conn,geom_col='geom',index_col='osm_id')
     conn.close()
 
-    return render_template('country.html', country=selected_amenity, iframe=get_map(gdf), wiki=get_wiki(selected_amenity[38]))
+    return render_template('country.html', country=selected_amenity, iframe=get_map(gdf,water_gdf,forest_gdf,building_gdf), wiki=get_wiki(selected_amenity[38]))
 
 if __name__ == '__main__':
     app.run()
