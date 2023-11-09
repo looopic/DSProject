@@ -75,7 +75,7 @@ def refresh():
 def get_amenity():
     selected_amenity = request.form['country']
     selected_amenity =selected_amenity[1:-1].split(',')
-    query_st='SELECT * FROM planet_osm_polygon WHERE osm_id=\''+selected_amenity[0]+'\';'
+    query_st="SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT way FROM planet_osm_polygon WHERE osm_id=\'"+selected_amenity[0]+'\'),way) ORDER BY name;'
     conn = get_db_connection()
     gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
     water_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM water;",conn,geom_col='geom',index_col='osm_id')
