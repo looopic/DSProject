@@ -21,9 +21,10 @@ def get_map(gdf,water,forest,building):
     centroid = gdf.to_crs(epsg='4326').unary_union.centroid
     m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6)
 
-    folium.GeoJson(gdf.to_crs(epsg='4326'),overlay=False,control=False,style_function=lambda feature:{
+    folium.GeoJson(gdf.to_crs(epsg='4326'),overlay=False,style_function=lambda feature:{
         "fill": False,
-        "color": "black"
+        "color": "black",
+        "weight":1
     },).add_to(m)
     folium.GeoJson(water,name="Water",style_function=lambda feature:{
         "color": "#627fde",
