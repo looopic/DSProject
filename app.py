@@ -19,9 +19,9 @@ def get_db_connection():
 #creates map of country
 def get_map(gdf,water,forest,building):
     centroid = gdf.to_crs(epsg='4326').unary_union.centroid
-    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6)
+    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=6, tiles="cartodb positron")
 
-    folium.GeoJson(gdf.to_crs(epsg='4326'),overlay=False,style_function=lambda feature:{
+    folium.GeoJson(gdf.to_crs(epsg='4326'), name="Communities",style_function=lambda feature:{
         "fill": False,
         "color": "black",
         "weight":1
@@ -31,7 +31,7 @@ def get_map(gdf,water,forest,building):
         "stroke": False,
         "fillOpacity": "0.8"
     },).add_to(m)
-    folium.GeoJson(forest,name="Forest",style_function=lambda feature:{
+    folium.GeoJson(forest,name="Forest",show=False,style_function=lambda feature:{
         "color": "#228a3b",
         "stroke": False,
         "fillOpacity": "0.8"
@@ -57,7 +57,7 @@ def get_wiki(country):
 def index():
     countries=refresh()
     if request.method == 'POST':
-        return get_amenity()
+        return get_country()
     return render_template('index.html', countries=countries)
 
 #refresh function: selects all countries
@@ -72,19 +72,20 @@ def refresh():
     return entries
 
 #Display of country's details
-@app.route('/amenity', methods=['GET','POST'])
-def get_amenity():
-    selected_amenity = request.form['country']
-    selected_amenity =selected_amenity[1:-1].split(',')
-    query_st="SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT way FROM planet_osm_polygon WHERE osm_id=\'"+selected_amenity[0]+'\'),way) ORDER BY name;'
+@app.route('/country', methods=['GET','POST'])
+def get_country():
+    selected_country = request.form['country']
+    selected_country =selected_country[1:-1].split(',')
+    query_st="SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT way FROM planet_osm_polygon WHERE osm_id=\'"+selected_country[0]+'\'),way) ORDER BY name;'
     conn = get_db_connection()
     gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
     water_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM water;",conn,geom_col='geom',index_col='osm_id')
     forest_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM forest;",conn,geom_col='geom',index_col='osm_id')
     building_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM building;",conn,geom_col='geom',index_col='osm_id')
+    community_gdf=gpd.GeoDataFrame.from_postgis("SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building  FROM communities;",conn,geom_col="way",index_col="osm_id").to_dict("records")
     conn.close()
 
-    return render_template('country.html', country=selected_amenity, iframe=get_map(gdf,water_gdf,forest_gdf,building_gdf), wiki=get_wiki(selected_amenity[38]))
+    return render_template('country.html', country=selected_country, iframe=get_map(gdf,water_gdf,forest_gdf,building_gdf), wiki=get_wiki(selected_country[38]),communities=community_gdf)
 
 if __name__ == '__main__':
     app.run()

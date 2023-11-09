@@ -3,7 +3,7 @@
 {% block content %}
     <div class="drop_down">
         <h1>{% block title %} Countries {% endblock %}</h1>
-        <form method="post" action="/amenity">
+        <form method="post" action="/country">
             <label for="country">Choose an country:</label>
             <select name="country" id="country">
                 {% for country in countries %}

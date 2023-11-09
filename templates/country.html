@@ -15,4 +15,22 @@
         </div>
 
     </div>
+    <div>
+        <table>
+            <tr>
+                <th>Community</th>
+                <th>Percentage Water Area</th>
+                <th>Percentage Forest Area</th>
+                <th>Percentage Built-up Area</th>
+            </tr>
+            {% for community in communities %}
+            <tr>
+                <td>{{ community['name'] }}</td>
+                <td>{{ community['per_water'] }}%</td>
+                <td>{{ community['per_forest'] }}%</td>
+                <td>{{ community['per_building'] }}%</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}
