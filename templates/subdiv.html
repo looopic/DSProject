@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Selected subdivision: {{selected_level[0]}}</h1>
+        <hr/>
+
+        <p>You've selected {{selected_level[0]}}. This site will show you different key performance indices for this country.</p>
+    <div class="drop_down">
+        <h1>{% block title %} Communities {% endblock %}</h1>
+        <form method="post" action="/community">
+            <label for="community">Choose an community:</label>
+            <select name="community" id="community">
+                {% for community in adminLevel8 %}
+                    <option value="{{ community}}">{{ community[38]}}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

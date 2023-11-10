@@ -78,6 +78,10 @@ def get_country():
     selected_country =selected_country[1:-1].split(',')
     query_st="SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT way FROM planet_osm_polygon WHERE osm_id=\'"+selected_country[0]+'\'),way) ORDER BY name;'
     conn = get_db_connection()
+    cur=conn.cursor()
+    cur.execute("SELECT name,ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS((SELECT way from planet_osm_polygon WHERE osm_id="+selected_country[0]+"),way) AND building IS NULL GROUP BY name;")
+    adminLevel4=cur.fetchall()
+    cur.close()
     gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
     water_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM water;",conn,geom_col='geom',index_col='osm_id')
     forest_gdf=gpd.GeoDataFrame.from_postgis("SELECT * FROM forest;",conn,geom_col='geom',index_col='osm_id')
@@ -85,7 +89,20 @@ def get_country():
     community_gdf=gpd.GeoDataFrame.from_postgis("SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building  FROM communities;",conn,geom_col="way",index_col="osm_id").to_dict("records")
     conn.close()
 
-    return render_template('country.html', country=selected_country, iframe=get_map(gdf,water_gdf,forest_gdf,building_gdf), wiki=get_wiki(selected_country[38]),communities=community_gdf)
+    return render_template('country.html', country=selected_country, iframe=get_map(gdf,water_gdf,forest_gdf,building_gdf), wiki=get_wiki(selected_country[38]),communities=community_gdf, adminLevel4=adminLevel4)
+
+@app.route('/subdivision',methods=['GET','POST'])
+def get_subdiv():
+    selected_level=request.form['subdivision']
+    selected_level=selected_level.split(',')
+    print(selected_level)
+    conn=get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND name='Schaffhausen'),way) ORDER BY name;")
+    adminLevel8=cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template('subdiv.html', selected_level=selected_level, adminLevel8=adminLevel8)
 
 if __name__ == '__main__':
     app.run()

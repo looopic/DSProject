@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="country" visibility="invisible">
+    <div class="country">
         <h1>Selected Country: {{country[38]}}</h1>
         <hr/>
 
@@ -9,6 +9,16 @@
         <div class="info">
             <h3>{{wiki.title}}</h3>
             <p>{{wiki.summary}}</p>
+            <br/>
+            <form method="post" action="/subdivision">
+                <label for="subdivision">Choose an subdivision:</label>
+                <select name="subdivision" id="subdivision">
+                    {% for subdiv in adminLevel4 %}
+                        <option value="{{ subdiv}}">{{ subdiv[0]}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Submit</button>
+            </form>
         </div>
         <div class="map">
             {{ iframe|safe }}
