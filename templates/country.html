@@ -14,7 +14,7 @@
                 <label for="subdivision">Choose an subdivision:</label>
                 <select name="subdivision" id="subdivision">
                     {% for subdiv in adminLevel4 %}
-                        <option value="{{ subdiv}}">{{ subdiv[0]}}</option>
+                        <option value="{{ subdiv}}">{{ subdiv[1]}}</option>
                     {% endfor %}
                 </select>
                 <button type="submit">Submit</button>

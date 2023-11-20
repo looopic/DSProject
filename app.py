@@ -79,7 +79,7 @@ def get_country():
     query_st="SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT way FROM planet_osm_polygon WHERE osm_id=\'"+selected_country[0]+'\'),way) ORDER BY name;'
     conn = get_db_connection()
     cur=conn.cursor()
-    cur.execute("SELECT name,ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS((SELECT way from planet_osm_polygon WHERE osm_id="+selected_country[0]+"),way) AND building IS NULL GROUP BY name;")
+    cur.execute("SELECT osm_id, name,ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS((SELECT way from planet_osm_polygon WHERE osm_id="+selected_country[0]+"),way) AND building IS NULL GROUP BY name, osm_id;")
     adminLevel4=cur.fetchall()
     cur.close()
     gdf=gpd.GeoDataFrame.from_postgis(query_st,conn,geom_col='way',index_col='osm_id')
@@ -95,10 +95,10 @@ def get_country():
 def get_subdiv():
     selected_level=request.form['subdivision']
     selected_level=selected_level.split(',')
-    print(selected_level)
+    print(selected_level[0:2])
     conn=get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND name='Schaffhausen'),way) ORDER BY name;")
+    cur.execute("SELECT name, ST_Union(way) AS aggregated_way FROM planet_osm_polygon WHERE admin_level='8'  AND ST_CONTAINS( ( SELECT ST_Union(array_agg(way))  FROM planet_osm_polygon  WHERE admin_level='4' AND name="+selected_level[1]+"),  way ) GROUP BY name ORDER BY name;")
     adminLevel8=cur.fetchall()
     cur.close()
     conn.close()
