@@ -1,3 +1,4 @@
+@echo off
 REM Define default values for parameters
 set "db=gisdb"
 set "username=gisdb"

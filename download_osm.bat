@@ -31,8 +31,8 @@ powershell -command "(New-Object System.Net.WebClient).DownloadFile('https://dow
 
 REM Create merged OSM-File
 echo Merging OSM-files
-%userprofile%\Downloads\osmconvert64-0.8.8p.exe %userprofile%\Downloads\switzerland-latest.osm.pbf --out-o5m | %userprofile%\Downloads\osmconvert64-0.8.8p.exe - %userprofile%\Downloads\austria-latest.osm.pbf -o=%userprofile%\Downloads\merge1.pbf
-%userprofile%\Downloads\osmconvert64-0.8.8p.exe %userprofile%\Downloads\merge1.pbf --out-o5m | %userprofile%\Downloads\osmconvert64-0.8.8p.exe - %userprofile%\Downloads\netherlands-latest.osm.pbf -o=%userprofile%\Downloads\merged.pbf
+osmconvert64-0.8.8p.exe %userprofile%\Downloads\switzerland-latest.osm.pbf --out-o5m | osmconvert64-0.8.8p.exe - %userprofile%\Downloads\austria-latest.osm.pbf -o=%userprofile%\Downloads\merge1.pbf
+osmconvert64-0.8.8p.exe %userprofile%\Downloads\merge1.pbf --out-o5m | osmconvert64-0.8.8p.exe - %userprofile%\Downloads\netherlands-latest.osm.pbf -o=%userprofile%\Downloads\merged.pbf
 
 REM Import OSM data into PostgreSQL using osm2pgsql
 echo Importing OSM data into PostgreSQL...
