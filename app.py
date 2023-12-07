@@ -177,7 +177,6 @@ def refresh_amenity():
     amenity_values = cur.fetchall()
     cur.close()
     conn.close()
-    print(amenity_values)
     return amenity_values
 
 
