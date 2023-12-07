@@ -23,11 +23,11 @@ if not exist "%userprofile%\Downloads\osmconvert64-0.8.8p.exe" (
 
 REM Download Switzerland OSM data
 echo Downloading Switzerland OSM data...
-REM powershell -command "(New-Object System.Net.WebClient).DownloadFile('http://download.geofabrik.de/europe/switzerland-latest.osm.pbf', '%userprofile%\Downloads\switzerland-latest.osm.pbf')"
+powershell -command "(New-Object System.Net.WebClient).DownloadFile('http://download.geofabrik.de/europe/switzerland-latest.osm.pbf', '%userprofile%\Downloads\switzerland-latest.osm.pbf')"
 echo Downloading Austria OSM data...
-REM powershell -command "(New-Object System.Net.WebClient).DownloadFile('https://download.geofabrik.de/europe/austria-latest.osm.pbf', '%userprofile%\Downloads\austria-latest.osm.pbf')"
+powershell -command "(New-Object System.Net.WebClient).DownloadFile('https://download.geofabrik.de/europe/austria-latest.osm.pbf', '%userprofile%\Downloads\austria-latest.osm.pbf')"
 echo Downloading Netherlands OSM data...
-REM powershell -command "(New-Object System.Net.WebClient).DownloadFile('https://download.geofabrik.de/europe/netherlands-latest.osm.pbf', '%userprofile%\Downloads\netherlands-latest.osm.pbf')"
+powershell -command "(New-Object System.Net.WebClient).DownloadFile('https://download.geofabrik.de/europe/netherlands-latest.osm.pbf', '%userprofile%\Downloads\netherlands-latest.osm.pbf')"
 
 REM Create merged OSM-File
 echo Merging OSM-files
