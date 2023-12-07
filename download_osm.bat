@@ -15,7 +15,7 @@ if not exist "%userprofile%\Downloads\default.style" (
     powershell -command "(New-Object System.Net.WebClient).DownloadFile('https://learnosm.org/files/default.style', '%userprofile%\Downloads\default.style')"
 )
 
-REM Check if default.style file exists in the Downloads folder
+REM Check if osmconvert file exists in the Downloads folder
 if not exist "%userprofile%\Downloads\osmconvert64-0.8.8p.exe" (
     echo Downloading osmconvert...
     powershell -command "Invoke-WebRequest -OutFile %userprofile%\Downloads\osmconvert64-0.8.8p.exe 'https://drive.google.com/uc?export=download&id=1g7uYHpO31p0CLiE86g2mrBo9Yw_kMSiE'"
