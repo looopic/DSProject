@@ -1,12 +1,14 @@
 import os
 import psycopg2
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import folium
 import geopandas as gpd
 import wikipedia
-from dotenv import load_dotenv
 
-load_dotenv("access.env")
+os.environ["DB_NAME"] = "dsc_project"
+os.environ["DB_USERNAME"] = "postgres"
+os.environ["DB_PASSWORD"] = "MotorolaV500."
+
 
 app = Flask(__name__)
 
@@ -167,10 +169,22 @@ def get_subdiv():
 
 
 # Oliver's Part
+# refresh function: selects unique amenities
+def refresh_amenity():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT DISTINCT amenity FROM planet_osm_polygon;")
+    amenity_values = cur.fetchall()
+    cur.close()
+    conn.close()
+    print(amenity_values)
+    return amenity_values
+
+
 # Query page to select amenities
 @app.route("/querrys", methods=["GET"])
 def querrys():
-    amenity_values, _ = refresh()
+    amenity_values = refresh_amenity()
     return render_template("querrys.html", amenity_values=amenity_values)
 
 
