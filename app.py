@@ -4,6 +4,9 @@ from flask import Flask, render_template, request
 import folium
 import geopandas as gpd
 import wikipedia
+from dotenv import load_dotenv
+
+load_dotenv("access.env")
 
 app = Flask(__name__)
 
