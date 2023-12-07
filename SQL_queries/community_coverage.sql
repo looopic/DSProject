@@ -43,6 +43,12 @@ LEFT JOIN forest f ON ST_Intersects(way,f.geom)
 LEFT JOIN building b ON ST_Intersects(way,b.geom)
 WHERE admin_level='8';
 
+CREATE VIEW countries AS
+SELECT name, ST_Union(way) AS merged_polygon
+FROM planet_osm_polygon
+WHERE admin_level = '2' AND boundary = 'administrative'
+GROUP BY name;
+
 REFRESH MATERIALIZED VIEW water;
 REFRESH MATERIALIZED VIEW forest;
 REFRESH MATERIALIZED VIEW building;
