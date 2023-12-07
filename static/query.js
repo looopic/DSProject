@@ -16,7 +16,11 @@ function addAmenity() {
             }
         }
     }
+
+    // Nachdem die Amenities hinzugefügt wurden, aktualisiere die SQL-Abfrage
+    updateSQLQuery();
 }
+
 
 function removeAmenity() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
@@ -84,6 +88,24 @@ function displayQueryResultsInDOM(results) {
         queryResultsTable.appendChild(dataRow);
     }
 }
+
+function updateSQLQuery() {
+    // Get the selected amenities
+    var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
+    var selectedAmenities = [];
+    for (var i = 0; i < selectedAmenitiesSelect.options.length; i++) {
+        selectedAmenities.push(selectedAmenitiesSelect.options[i].value);
+    }
+
+    // Build the SQL query with OR conditions for selected amenities
+    var query = "SELECT osm_id, building, 'addr:housename', name, ST_Area(way) AS way_area, way FROM planet_osm_polygon WHERE amenity IN (";
+    query += selectedAmenities.map(function (amenity) { return "'" + amenity + "'"; }).join(", ");
+    query += ");";
+
+    // Display the SQL query in the textarea
+    $("#sqlQuery").val(query);
+}
+
 
 // Event listener for the "Run Query" button
 document.getElementById("runQueryButton").addEventListener("click", function () {
