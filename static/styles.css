@@ -1,0 +1,45 @@
+/* styles.css */
+
+nav a {
+    color: #d64161;
+    font-size: 3em;
+    margin-left: 50px;
+    text-decoration: none;
+}
+
+select {
+    width: 200px;
+}
+
+#selectedAmenities {
+    margin-top: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+    cursor: pointer;
+    /* Cursor ändert sich zu Pointer, um anzuzeigen, dass es anklickbar ist */
+}
+
+.sort-dropdown {
+    display: inline-block;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.sort-dropdown.active {
+    font-weight: bold;
+    /* Anzeigen, dass es aktiv ist */
+}
