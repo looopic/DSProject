@@ -32,12 +32,23 @@ function removeAmenity() {
             i--; // Adjust index after removal
         }
     }
+
+    // Nachdem die Amenities entfernt wurden, aktualisiere die SQL-Abfrage
+    updateSQLQuery();
 }
+
 
 function removeAllAmenities() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
     selectedAmenitiesSelect.innerHTML = "";
+
+    // Nachdem die Amenities entfernt wurden, aktualisiere die SQL-Abfrage
+    updateSQLQuery();
+
+    // Setze das sqlQuery-Feld auf einen leeren String
+    $("#sqlQuery").val("");
 }
+
 
 function runQuery() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
@@ -89,6 +100,7 @@ function displayQueryResultsInDOM(results) {
     }
 }
 
+
 function updateSQLQuery() {
     // Get the selected amenities
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
@@ -98,9 +110,16 @@ function updateSQLQuery() {
     }
 
     // Build the SQL query with OR conditions for selected amenities
-    var query = "SELECT osm_id, building, 'addr:housename', name, ST_Area(way) AS way_area, way FROM planet_osm_polygon WHERE amenity IN (";
-    query += selectedAmenities.map(function (amenity) { return "'" + amenity + "'"; }).join(", ");
-    query += ");";
+    var query = "SELECT osm_id, building, 'addr:housename', name, ST_Area(way) AS way_area, way FROM planet_osm_polygon";
+
+    // Check if there are selected amenities to filter
+    if (selectedAmenities.length > 0) {
+        query += " WHERE amenity IN (";
+        query += selectedAmenities.map(function (amenity) { return "'" + amenity + "'"; }).join(", ");
+        query += ")";
+    }
+
+    query += ";";
 
     // Display the SQL query in the textarea
     $("#sqlQuery").val(query);
