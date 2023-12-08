@@ -40,12 +40,24 @@
         <input type="button" value="Run Query" onclick="runQuery()">
     </form>
 
+    <h2>SQL Query</h2>
+    <textarea id="sqlQuery" rows="5" readonly></textarea>
+
     <h2>Search Results</h2>
     <table id="queryResults">
         <!-- Query results will be displayed here -->
     </table>
 
     <script type="text/javascript" src="{{ url_for('static', filename='query.js') }}"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Run the updateSQLQuery function when the selected amenities change
+            $("#selectedAmenities").change(function () {
+                updateSQLQuery();
+            });
+        });
+    </script>
 </body>
 
 </html>
