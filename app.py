@@ -102,7 +102,7 @@ def refresh():
 # Display of country's details
 @app.route("/country", methods=["GET", "POST"])
 def get_country():
-    selected_country = request.form["country"].split(",")
+    selected_country = request.form["country"][1:-1].split(",")
     query_st = (
         "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("
         + selected_country[1]
@@ -149,8 +149,7 @@ def get_country():
 
 @app.route("/subdivision", methods=["GET", "POST"])
 def get_subdiv():
-    selected_level = request.form["subdivision"]
-    selected_level = selected_level.split(",")
+    selected_level = request.form["subdivision"][1:-1].split(",")
     print(selected_level[0:2])
     conn = get_db_connection()
     cur = conn.cursor()
@@ -186,7 +185,7 @@ def get_subdiv():
 
 @app.route("/community", methods=["GET","POST"])
 def get_community():
-    selected_community = request.form["community"].split(",")
+    selected_community = request.form["community"][1:-1].split(",")
     conn = get_db_connection()
     gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("+ selected_community[1]+ ",way) ORDER BY name;", conn, geom_col="way"
