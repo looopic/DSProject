@@ -103,11 +103,11 @@ def refresh():
     print(len(entries))
     return entries
 
-
 # Display of country's details
 @app.route("/country", methods=["GET", "POST"])
 def get_country():
     selected_country = request.form["country"][1:-1].split(",")
+    print(selected_country[0])
     query_st = (
         "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("
         + selected_country[1]
@@ -156,7 +156,7 @@ def get_country():
         "country.html",
         country=selected_country,
         iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf),
-        wiki=get_wiki(selected_country[0]),
+        wiki=get_wiki(selected_country[0].split("/")[0]),
         subdivisions=subdiv_gdf,
         adminLevel4=adminLevel4,
     )
