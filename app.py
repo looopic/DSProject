@@ -175,7 +175,7 @@ def get_subdiv():
         "SELECT ST_Intersection(building.geom,"+selected_level[1]+") FROM building;", conn, geom_col="geom"
     )
     community_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM sudvivision WHERE ST_CONTAINS("+selected_level[1]+",way);",
+        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 AS per_building, CASE WHEN EXISTS(SELECT ST_CONTAINS(c.way, r.way) FROM communities c, planet_osm_point r WHERE r.railway='Station') THEN 'YES' ELSE 'NO' END AS railway FROM communities WHERE ST_CONTAINS("+selected_level[1]+",way);",
         conn,
         geom_col="way",
         index_col="osm_id",
