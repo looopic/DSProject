@@ -1,31 +1,31 @@
 CREATE MATERIALIZED VIEW water AS
 SELECT
 	1 as osm_id,
-	ST_SimplifyPreserveTopology(ST_Union(
+	ST_Union(
 		ARRAY(
-			SELECT way
+			SELECT ST_MakeValid(way) AS valid_geom
 			FROM planet_osm_polygon 
-			WHERE "natural" = 'water')),1) 
+			WHERE "natural" = 'water'))
 	AS geom;
 
 CREATE MATERIALIZED VIEW forest AS
 SELECT
 	1 AS osm_id,
-    ST_SimplifyPreserveTopology(ST_Union(
+    ST_Union(
 		ARRAY(
-			SELECT way 
+			SELECT ST_MakeValid(CASE WHEN ST_Area(way) < 1000000 THEN ST_Simplify(way,1) ELSE ST_Simplify(way,10) END)
 			FROM planet_osm_polygon 
-			WHERE landuse = 'forest')),1)
+			WHERE landuse = 'forest'))
 	AS geom;
 
 CREATE MATERIALIZED VIEW building AS
 SELECT
 	1 AS osm_id,
-    ST_SimplifyPreserveTopology(ST_Union(
+    ST_Union(
 		ARRAY(
-			SELECT way 
+			SELECT ST_MakeValid(way) AS valid_geom
 			FROM planet_osm_polygon 
-			WHERE landuse IN ('commercial','education','industrial','residential','retail','institutional'))),1)
+			WHERE landuse IN ('commercial','education','industrial','residential','retail','institutional')))
 	AS geom;
 
 CREATE MATERIALIZED VIEW communities AS
@@ -53,5 +53,3 @@ REFRESH MATERIALIZED VIEW water;
 REFRESH MATERIALIZED VIEW forest;
 REFRESH MATERIALIZED VIEW building;
 REFRESH MATERIALIZED VIEW communities;
-
-SELECT * FROM communities;

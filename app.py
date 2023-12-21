@@ -5,9 +5,9 @@ import folium
 import geopandas as gpd
 import wikipedia
 
-os.environ["DB_NAME"] = "dsc_project"
-os.environ["DB_USERNAME"] = "postgres"
-os.environ["DB_PASSWORD"] = "MotorolaV500."
+os.environ["DB_NAME"] = ""
+os.environ["DB_USERNAME"] = ""
+os.environ["DB_PASSWORD"] = ""
 
 
 app = Flask(__name__)
@@ -91,7 +91,7 @@ def index():
 def refresh():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM planet_osm_polygon WHERE admin_level='2' ORDER BY NAME;")
+    cur.execute("SELECT * FROM countries ORDER BY NAME;")
     entries = cur.fetchall()
     cur.close()
     conn.close()
@@ -105,33 +105,33 @@ def get_country():
     selected_country = request.form["country"]
     selected_country = selected_country[1:-1].split(",")
     query_st = (
-        "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS((SELECT way FROM planet_osm_polygon WHERE osm_id='"
-        + selected_country[0]
-        + "'),way) ORDER BY name;"
+        "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("
+        + selected_country[1]
+        + ",way) ORDER BY name;"
     )
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT osm_id, name,ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS((SELECT way from planet_osm_polygon WHERE osm_id="
-        + selected_country[0]
-        + "),way) AND building IS NULL GROUP BY name, osm_id;"
+        "SELECT osm_id, name,ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS("
+        + selected_country[1]
+        + ",way) AND building IS NULL GROUP BY name, osm_id;"
     )
     adminLevel4 = cur.fetchall()
     cur.close()
     gdf = gpd.GeoDataFrame.from_postgis(
-        query_st, conn, geom_col="way", index_col="osm_id"
+        query_st, conn, geom_col="way"
     )
     water_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT * FROM water;", conn, geom_col="geom", index_col="osm_id"
+        "SELECT ST_Intersection(water.geom,"+selected_country[1]+") FROM water;", conn, geom_col="geom"
     )
     forest_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT * FROM forest;", conn, geom_col="geom", index_col="osm_id"
+        "SELECT ST_Intersection(forest.geom,"+selected_country[1]+") FROM forest;", conn, geom_col="geom"
     )
     building_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT * FROM building;", conn, geom_col="geom", index_col="osm_id"
+        "SELECT ST_Intersection(building.geom,"+selected_country[1]+") FROM building;", conn, geom_col="geom"
     )
     community_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building  FROM communities;",
+        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM communities;",
         conn,
         geom_col="way",
         index_col="osm_id",

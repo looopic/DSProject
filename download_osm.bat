@@ -38,4 +38,6 @@ REM Import OSM data into PostgreSQL using osm2pgsql
 echo Importing OSM data into PostgreSQL...
 osm2pgsql -c -d %db% -U %username% -H localhost -S "%userprofile%\Downloads\default.style" "%userprofile%\Downloads\merged.pbf"
 
+psql -d %db% -U %username% -c "REFRESH MATERIALIZED VIEW water;" -c "REFRESH MATERIALIZED VIEW forest;" -c "REFRESH MATERIALIZED VIEW building;" -c "REFRESH MATERIALIZED VIEW communities;"
+
 echo Process completed.
