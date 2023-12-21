@@ -330,6 +330,9 @@ def predefined_query():
 
     return jsonify(results)
 
+@app.route("/about", method=["GET"])
+def get_about():
+    return render_template("about.html")
 
 if __name__ == "__main__":
     app.run()
