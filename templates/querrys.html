@@ -17,31 +17,38 @@
         <a href="#">About</a>
     </nav>
 
-
+    <h1>Database Searches</h1>
+    <br>
     <h2>Predefined Searches</h2>
     <div>
         <div>
             <form>
                 <label for="predefinedQuery">Choose a predefined query:</label>
+                <!-- Dropdown to choose one of the predefined searches -->
                 <select name="predefinedQuery" id="predefinedQuery">
                     <option value="historicalChimneys">Historical Chimneys</option>
                     <option value="commercialBuildings">Commercial Buildings</option>
                     <option value="schools">Schools</option>
                 </select>
                 <br>
+                <!-- Button to run one of the predefined searches -->
                 <input type="button" value="Run Query" onclick="runPredefinedQuery()">
             </form>
         </div>
-
+        <br>
         <div>
             <h4>Selected Query:</h4>
+            <!-- Textarea to show the SQL-querry of the selected predefined search in the dropdown menu -->
             <textarea id="selectedQueryDisplay" rows="5" readonly></textarea>
         </div>
     </div>
-
+    <br>
+    <br>
     <h2>Individual Query</h2>
+    <br>
     <h3>Search for different amenities</h3>
     <form>
+        <!-- Load all unique values of the amenities and show it to select one or more values -->
         <label for="amenity">Choose amenity:</label>
         <select name="amenity" id="amenity" multiple>
             {% for value in amenity_values %}
@@ -49,16 +56,21 @@
             {% endfor %}
         </select>
         <br>
+        <!-- Button to add the selected amenity value or values into selected amenities -->
         <input type="button" value="Add" onclick="addAmenity()">
         <br>
+        <!-- Selected amenities will be displayed here -->
         <label for="selectedAmenities">Selected Amenities:</label>
         <select name="selectedAmenities" id="selectedAmenities" multiple>
-            <!-- Selected amenities will be displayed here -->
         </select>
         <br>
+        <!-- Button to remove the selected amenity value or values from selected amenities -->
         <input type="button" value="Remove" onclick="removeAmenity()">
+        <br>
+        <!-- Button to remove all amenity values from selected amenities -->
         <input type="button" value="Remove All" onclick="removeAllAmenities()">
         <br>
+        <!-- Button to run the query to the postgresql -->
         <input type="button" value="Run Query" onclick="runQuery()">
     </form>
 
