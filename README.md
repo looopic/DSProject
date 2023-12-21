@@ -31,4 +31,4 @@ If you don't specify anything, it will try to connect to the database "gisdb" wi
 
 The style-file will also be automatically downloaded if it doesn't exist in the download folder.
 
-*** Keep the size of the osm-file in mind. An import and the refreshing of the views can take several hours up to days! ***
+***Keep the size of the osm-file in mind. An import and the refreshing of the views can take several hours up to days!***
