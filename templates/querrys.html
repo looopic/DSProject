@@ -39,6 +39,7 @@
         <div>
             <h4>Selected Query:</h4>
             <!-- Textarea to show the SQL-querry of the selected predefined search in the dropdown menu -->
+            <label for="selectedQueryDisplay">Selected Query:</label>
             <textarea id="selectedQueryDisplay" rows="5" readonly></textarea>
         </div>
     </div>
@@ -75,11 +76,13 @@
     </form>
 
     <h2>SQL Query</h2>
+    <!-- Textarea to show the SQL-querry based on the selected amenities -->
+    <label for="sqlQuery">SQL Query:</label>
     <textarea id="sqlQuery" rows="5" readonly></textarea>
 
     <h2>Search Results</h2>
+    <!-- Query results will be displayed here -->
     <table id="queryResults">
-        <!-- Query results will be displayed here -->
     </table>
 
     <script type="text/javascript" src="{{ url_for('static', filename='query.js') }}"></script>
@@ -97,10 +100,9 @@
             // Run the updateSQLQuery function when the predefined query changes
             $("#predefinedQuery").change(function () {
                 updateSQLQuery();
-                runPredefinedQuery(); // Führt die vordefinierte Abfrage aus, wenn sich der Wert ändert
+                runPredefinedQuery();
             });
         });
-    </script>
     </script>
 </body>
 
