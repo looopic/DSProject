@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Selected community: {{selected_level[0]}}</h1>
+<hr />
+
+<p>You've selected {{selected_level[0]}}. This site will show you different key performance indices for this community.
+</p>
+<div class="info">
+    <h3>{{wiki.title}}</h3>
+    <p>{{wiki.summary}}</p>
+</div>
+
+<div class="map">
+    {{ iframe|safe }}
+</div>
+{% endblock %}

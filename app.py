@@ -142,7 +142,7 @@ def get_country():
         "country.html",
         country=selected_country,
         iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf),
-        wiki=get_wiki(selected_country[38]),
+        wiki=get_wiki(selected_country[0]),
         communities=community_gdf,
         adminLevel4=adminLevel4,
     )
@@ -162,11 +162,43 @@ def get_subdiv():
     )
     adminLevel8 = cur.fetchall()
     cur.close()
+    gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("+ selected_level[1]+ ",way) ORDER BY name;", conn, geom_col="way"
+    )
+    water_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(water.geom,"+selected_level[1]+") FROM water;", conn, geom_col="geom"
+    )
+    forest_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(forest.geom,"+selected_level[1]+") FROM forest;", conn, geom_col="geom"
+    )
+    building_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(building.geom,"+selected_level[1]+") FROM building;", conn, geom_col="geom"
+    )
     conn.close()
     return render_template(
-        "subdiv.html", selected_level=selected_level, adminLevel8=adminLevel8
+        "subdiv.html", selected_level=selected_level, adminLevel8=adminLevel8,iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf), wiki=get_wiki(selected_level[0])
     )
 
+@app.route("/community", methods=["GET","POST"])
+def get_community():
+    selected_community = request.form["community"].split(",")
+    conn = get_db_connection()
+    gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("+ selected_community[1]+ ",way) ORDER BY name;", conn, geom_col="way"
+    )
+    water_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(water.geom,"+selected_community[1]+") FROM water;", conn, geom_col="geom"
+    )
+    forest_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(forest.geom,"+selected_community[1]+") FROM forest;", conn, geom_col="geom"
+    )
+    building_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(building.geom,"+selected_community[1]+") FROM building;", conn, geom_col="geom"
+    )
+    conn.close()
+    return render_template(
+        "community.html", selected_community=selected_community, iframe=get_map(gdf,water_gdf,forest_gdf,building_gdf), wiki=get_wiki(selected_community[0])
+    )
 
 # Oliver's Part
 # refresh function: selects unique amenities
