@@ -5,19 +5,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Query Page</title>
+    <title>Queries</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
     <nav>
-        <a href="{{ url_for('index') }}">FlaskApp</a>
-        <a href="{{ url_for('querrys') }}">Querrys</a>
-        <a href="#">About</a>
+        <a href="{{ url_for('index') }}">Country</a>
+        <a href="{{ url_for('querrys') }}">Queries</a>
+        <a href="about.html">About</a>
     </nav>
 
-    <h1>Database Searches</h1>
+    <h1>Database Queries</h1>
     <br>
     <h2>Predefined Searches</h2>
     <div>
@@ -89,17 +89,16 @@
 
     <script>
         $(document).ready(function () {
-            // Run the updateSQLQuery function on page load
-            updateSQLQuery();
+            // Run the function on page load
+            runPredefinedQuery();
 
-            // Run the updateSQLQuery function when the selected amenities change
+            // Run the function when the selected amenities change
             $("#selectedAmenities").change(function () {
                 updateSQLQuery();
             });
 
-            // Run the updateSQLQuery function when the predefined query changes
+            // Run the function when the predefined query changes
             $("#predefinedQuery").change(function () {
-                updateSQLQuery();
                 runPredefinedQuery();
             });
         });
