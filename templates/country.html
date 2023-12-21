@@ -28,17 +28,17 @@
     <div>
         <table>
             <tr>
-                <th>Community</th>
+                <th>Subdivision</th>
                 <th>Percentage Water Area</th>
                 <th>Percentage Forest Area</th>
                 <th>Percentage Built-up Area</th>
             </tr>
-            {% for community in communities %}
+            {% for subdiv in subdivisions %}
             <tr>
-                <td>{{ community['name'] }}</td>
-                <td>{{ community['per_water'] }}%</td>
-                <td>{{ community['per_forest'] }}%</td>
-                <td>{{ community['per_building'] }}%</td>
+                <td>{{ subdiv['name'] }}</td>
+                <td>{{ subdiv['per_water'] }}%</td>
+                <td>{{ subdiv['per_forest'] }}%</td>
+                <td>{{ subdiv['per_building'] }}%</td>
             </tr>
             {% endfor %}
         </table>

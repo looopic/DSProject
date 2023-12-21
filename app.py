@@ -130,8 +130,8 @@ def get_country():
     building_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(building.geom,"+selected_country[1]+") FROM building;", conn, geom_col="geom"
     )
-    community_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM communities;",
+    subdiv_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM sudvivision WHERE ST_CONTAINS("+selected_country[1]+",way);",
         conn,
         geom_col="way",
         index_col="osm_id",
@@ -143,7 +143,7 @@ def get_country():
         country=selected_country,
         iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf),
         wiki=get_wiki(selected_country[0]),
-        communities=community_gdf,
+        subdivisions=subdiv_gdf,
         adminLevel4=adminLevel4,
     )
 
@@ -174,9 +174,15 @@ def get_subdiv():
     building_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(building.geom,"+selected_level[1]+") FROM building;", conn, geom_col="geom"
     )
+    community_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM sudvivision WHERE ST_CONTAINS("+selected_level[1]+",way);",
+        conn,
+        geom_col="way",
+        index_col="osm_id",
+    ).to_dict("records")
     conn.close()
     return render_template(
-        "subdiv.html", selected_level=selected_level, adminLevel8=adminLevel8,iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf), wiki=get_wiki(selected_level[0])
+        "subdiv.html", selected_level=selected_level, adminLevel8=adminLevel8,iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf), wiki=get_wiki(selected_level[0]), communities=community_gdf
     )
 
 @app.route("/community", methods=["GET","POST"])
