@@ -77,7 +77,10 @@ def get_map(gdf, water, forest, building):
 
 
 def get_wiki(country):
-    return wikipedia.page(country)
+    try:
+        return wikipedia.page(country)
+    except:
+        return {"title": "No Wikipedia Article", "summary": "No Wikipedia Article"}
 
 
 # home directory of website. You're able to select a country.
@@ -121,29 +124,32 @@ def get_country():
     cur.close()
     gdf = gpd.GeoDataFrame.from_postgis(query_st, conn, geom_col="way")
     water_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT ST_Intersection(water.geom," + selected_country[1] + ") FROM water;",
-        conn,
-        geom_col="geom",
-    )
-    forest_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT ST_Intersection(forest.geom," + selected_country[1] + ") FROM forest;",
+        "SELECT ST_Intersection(water.geom,"
+        + selected_country[1]
+        + ") AS geom FROM water;",
         conn,
         geom_col="geom",
     )
     building_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(building.geom,"
         + selected_country[1]
-        + ") FROM building;",
+        + ") AS geom FROM building;",
+        conn,
+        geom_col="geom",
+    )
+    forest_gdf = gpd.GeoDataFrame.from_postgis(
+        "SELECT ST_Intersection(forest.geom,"
+        + selected_country[1]
+        + ") AS geom FROM forest;",
         conn,
         geom_col="geom",
     )
     subdiv_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM sudvivision WHERE ST_CONTAINS("
+        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 as per_building FROM subdivision WHERE ST_CONTAINS("
         + selected_country[1]
         + ",way);",
         conn,
         geom_col="way",
-        index_col="osm_id",
     ).to_dict("records")
     conn.close()
     return render_template(
@@ -172,35 +178,38 @@ def get_subdiv():
     cur.close()
     gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("
-        + selected_level[1]
+        + selected_level[2]
         + ",way) ORDER BY name;",
         conn,
         geom_col="way",
     )
     water_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT ST_Intersection(water.geom," + selected_level[1] + ") FROM water;",
+        "SELECT ST_Intersection(water.geom,"
+        + selected_level[2]
+        + ") AS geom FROM water;",
         conn,
         geom_col="geom",
     )
     forest_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT ST_Intersection(forest.geom," + selected_level[1] + ") FROM forest;",
+        "SELECT ST_Intersection(forest.geom,"
+        + selected_level[2]
+        + ") AS geom FROM forest;",
         conn,
         geom_col="geom",
     )
     building_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(building.geom,"
-        + selected_level[1]
-        + ") FROM building;",
+        + selected_level[2]
+        + ") AS geom FROM building;",
         conn,
         geom_col="geom",
     )
     community_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 AS per_building, CASE WHEN EXISTS(SELECT ST_CONTAINS(c.way, r.way) FROM communities c, planet_osm_point r WHERE r.railway='Station') THEN 'YES' ELSE 'NO' END AS railway FROM communities WHERE ST_CONTAINS("
-        + selected_level[1]
+        "SELECT *, ST_Area(way)/1000000 AS area, water_area/(ST_Area(way)/1000000)*100 as per_water,forest_area/(ST_Area(way)/1000000)*100 as per_forest,building_area/(ST_Area(way)/1000000)*100 AS per_building, CASE WHEN EXISTS(SELECT 1 FROM planet_osm_point r WHERE r.railway='station' AND ST_Within(r.way, communities.way)) THEN 'Yes' ELSE 'No' END AS railway FROM communities WHERE ST_CONTAINS("
+        + selected_level[2]
         + ",way);",
         conn,
         geom_col="way",
-        index_col="osm_id",
     ).to_dict("records")
     conn.close()
     return render_template(
@@ -208,7 +217,7 @@ def get_subdiv():
         selected_level=selected_level,
         adminLevel8=adminLevel8,
         iframe=get_map(gdf, water_gdf, forest_gdf, building_gdf),
-        wiki=get_wiki(selected_level[0]),
+        wiki=get_wiki(selected_level[1]),
         communities=community_gdf,
     )
 
@@ -226,21 +235,23 @@ def get_community():
         geom_col="way",
     )
     water_gdf = gpd.GeoDataFrame.from_postgis(
-        "SELECT ST_Intersection(water.geom," + selected_community[1] + ") FROM water;",
+        "SELECT ST_Intersection(water.geom,"
+        + selected_community[1]
+        + ") AS geom FROM water;",
         conn,
         geom_col="geom",
     )
     forest_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(forest.geom,"
         + selected_community[1]
-        + ") FROM forest;",
+        + ") AS geom FROM forest;",
         conn,
         geom_col="geom",
     )
     building_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(building.geom,"
         + selected_community[1]
-        + ") FROM building;",
+        + ") AS geom FROM building;",
         conn,
         geom_col="geom",
     )
