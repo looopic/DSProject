@@ -111,7 +111,7 @@ def get_country():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT osm_id, name,ST_UNION(array_agg(way)) AS way_union FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS("
+        "SELECT osm_id, name,ST_UNION(array_agg(way)) AS geom FROM planet_osm_polygon WHERE admin_level='4' AND ST_CONTAINS("
         + selected_country[1]
         + ",way) AND building IS NULL GROUP BY name, osm_id;"
     )
