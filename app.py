@@ -118,7 +118,7 @@ def get_country():
     adminLevel4 = cur.fetchall()
     cur.close()
     gdf = gpd.GeoDataFrame.from_postgis(
-        query_st, conn, geom_col="way"
+        query_st, conn, geom_col="geom"
     )
     water_gdf = gpd.GeoDataFrame.from_postgis(
         "SELECT ST_Intersection(water.geom,"+selected_country[1]+") FROM water;", conn, geom_col="geom"
