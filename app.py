@@ -192,7 +192,6 @@ def process_query():
     try:
         selected_amenities = request.json.get("selectedAmenities")
 
-        # Check if selected_amenities is empty, if so, return an empty result
         if not selected_amenities:
             return jsonify([])
 
@@ -204,7 +203,6 @@ def process_query():
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Execute the query with the selected amenities
         cur.execute(query, selected_amenities)
         results = cur.fetchall()
 
@@ -217,8 +215,27 @@ def process_query():
 
 @app.route("/result", methods=["GET"])
 def show_results():
-    # If the user tries to access the results page directly without submitting the form
     return redirect(url_for("querrys"))
+
+
+@app.route("/predefined_query", methods=["POST"])
+def predefined_query():
+    selected_query = request.json.get("selectedQuery")
+
+    if selected_query == "historicalChimneys":
+        query = "SELECT osm_id, building, historic, man_made, ST_Area(way) AS way_area, way FROM planet_osm_polygon WHERE historic = 'industrial' AND man_made = 'chimney';"
+    elif selected_query == "commercialBuildings":
+        query = "SELECT osm_id, building, historic, man_made, ST_Area(way) AS way_area, way FROM planet_osm_polygon WHERE man_made = 'works' AND building IS NOT NULL AND historic IS NULL;"
+    elif selected_query == "schools":
+        query = "SELECT osm_id, building, historic, man_made, ST_Area(way) AS way_area, way FROM planet_osm_polygon WHERE amenity = 'school';"
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(query)
+    results = cur.fetchall()
+    conn.close()
+
+    return jsonify(results)
 
 
 if __name__ == "__main__":

@@ -17,8 +17,30 @@
         <a href="#">About</a>
     </nav>
 
-    <h1>Predefined Queries</h1>
-    <h2>Search for different amenities</h2>
+
+    <h2>Predefined Searches</h2>
+    <div>
+        <div>
+            <form>
+                <label for="predefinedQuery">Choose a predefined query:</label>
+                <select name="predefinedQuery" id="predefinedQuery">
+                    <option value="historicalChimneys">Historical Chimneys</option>
+                    <option value="commercialBuildings">Commercial Buildings</option>
+                    <option value="schools">Schools</option>
+                </select>
+                <br>
+                <input type="button" value="Run Query" onclick="runPredefinedQuery()">
+            </form>
+        </div>
+
+        <div>
+            <h4>Selected Query:</h4>
+            <textarea id="selectedQueryDisplay" rows="5" readonly></textarea>
+        </div>
+    </div>
+
+    <h2>Individual Query</h2>
+    <h3>Search for different amenities</h3>
     <form>
         <label for="amenity">Choose amenity:</label>
         <select name="amenity" id="amenity" multiple>
@@ -52,11 +74,21 @@
 
     <script>
         $(document).ready(function () {
+            // Run the updateSQLQuery function on page load
+            updateSQLQuery();
+
             // Run the updateSQLQuery function when the selected amenities change
             $("#selectedAmenities").change(function () {
                 updateSQLQuery();
             });
+
+            // Run the updateSQLQuery function when the predefined query changes
+            $("#predefinedQuery").change(function () {
+                updateSQLQuery();
+                runPredefinedQuery(); // Führt die vordefinierte Abfrage aus, wenn sich der Wert ändert
+            });
         });
+    </script>
     </script>
 </body>
 
