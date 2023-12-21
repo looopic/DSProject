@@ -102,8 +102,7 @@ def refresh():
 # Display of country's details
 @app.route("/country", methods=["GET", "POST"])
 def get_country():
-    selected_country = request.form["country"]
-    selected_country = selected_country[1:-1].split(",")
+    selected_country = request.form["country"].split(",")
     query_st = (
         "SELECT * FROM planet_osm_polygon WHERE admin_level='8' AND ST_CONTAINS("
         + selected_country[1]
