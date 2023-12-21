@@ -28,6 +28,21 @@ SELECT
 			WHERE landuse IN ('commercial','education','industrial','residential','retail','institutional')))
 	AS geom;
 
+CREATE MATERIALIZED VIEW subdivision AS
+SELECT
+	c.osm_id AS osm_id,
+	c.name AS name,
+	c.way AS way,
+	(ST_Area(ST_Intersection(way, w.geom)))/1000000 AS water_area,
+	(ST_Area(ST_Intersection(way, f.geom)))/1000000 AS forest_area,
+	(ST_Area(ST_Intersection(way, b.geom)))/1000000 AS building_area,
+	(ST_Area(way)-ST_Area(ST_Intersection(way, b.geom)))/1000000 AS free_space
+FROM planet_osm_polygon c
+LEFT JOIN water w ON ST_Intersects(way,w.geom)
+LEFT JOIN forest f ON ST_Intersects(way,f.geom)
+LEFT JOIN building b ON ST_Intersects(way,b.geom)
+WHERE admin_level='4';
+
 CREATE MATERIALIZED VIEW communities AS
 SELECT
 	c.osm_id AS osm_id,
