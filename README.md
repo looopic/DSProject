@@ -22,11 +22,14 @@
 After you've set up your database, you need to set up the tables and views needed for our project.
 To do this, please run the setup.bat file once. This will download the OSM-file of monaco and create the views and tables.
 
+> Usage: setup.bat (db_name) (username)
+
 ## download_osm.bat
 This batch file will download the newest version of the .osm.pbf file of switzerland from geofabrik.de and import it to your database.
 It has two parameters.
 
 > Usage: download_osm.bat (db_name) (username)
+
 If you don't specify anything, it will try to connect to the database "gisdb" with the user "postgres"
 
 The style-file will also be automatically downloaded if it doesn't exist in the download folder.
