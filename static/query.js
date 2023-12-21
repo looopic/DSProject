@@ -1,4 +1,5 @@
 
+// Function to add a new amenity to the list of selected amenities
 function addAmenity() {
     var amenitySelect = document.getElementById("amenity");
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
@@ -18,6 +19,7 @@ function addAmenity() {
     updateSQLQuery();
 }
 
+// Function to remove an amenity from the list of selected amenities
 function removeAmenity() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
 
@@ -31,6 +33,7 @@ function removeAmenity() {
     updateSQLQuery();
 }
 
+// Function to remove all amenities from the list of selected amenities
 function removeAllAmenities() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
     selectedAmenitiesSelect.innerHTML = "";
@@ -38,7 +41,7 @@ function removeAllAmenities() {
     $("#sqlQuery").val("");
 }
 
-
+// Function to run the query against the database
 function runQuery() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
     var selectedAmenities = [];
@@ -59,6 +62,7 @@ function runQuery() {
     });
 }
 
+// Function to display the query results
 function displayQueryResultsInDOM(results) {
     var queryResultsTable = document.getElementById("queryResults");
     queryResultsTable.innerHTML = "";
@@ -81,16 +85,14 @@ function displayQueryResultsInDOM(results) {
     }
 }
 
+// Function to display the query results
 function displayGenericQueryResultsInDOM(results) {
     var queryResultsTable = document.getElementById("queryResults");
     queryResultsTable.innerHTML = "";
     if (results.length === 0) {
         return;
     }
-
-    // Manuell erstellte Spaltentitel
     var headerTitles = ["osm_id", "building", "historic", "man_made", "ST_Area", "way"];
-
     var headerRow = document.createElement("tr");
 
     for (var i = 0; i < headerTitles.length; i++) {
@@ -98,9 +100,7 @@ function displayGenericQueryResultsInDOM(results) {
         th.appendChild(document.createTextNode(headerTitles[i]));
         headerRow.appendChild(th);
     }
-
     queryResultsTable.appendChild(headerRow);
-
     for (var i = 0; i < results.length; i++) {
         var dataRow = document.createElement("tr");
         for (var key in results[i]) {
@@ -114,7 +114,7 @@ function displayGenericQueryResultsInDOM(results) {
     }
 }
 
-
+// Function to run the predefined query against the database
 function runPredefinedQuery() {
     var selectedQuery = document.getElementById("predefinedQuery").value;
     var predefinedQuery = getPredefinedQuery(selectedQuery);  // Hier wird die Funktion verwendet, um die vordefinierte Abfrage zu erhalten
@@ -134,6 +134,7 @@ function runPredefinedQuery() {
     });
 }
 
+// Function to update the SQL query
 function updateSQLQuery() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
     var selectedAmenities = [];
@@ -150,6 +151,7 @@ function updateSQLQuery() {
     $("#sqlQuery").val(query);
 }
 
+// Function to get the predefined query
 function getPredefinedQuery(selectedQuery) {
     switch (selectedQuery) {
         case "historicalChimneys":
@@ -162,15 +164,12 @@ function getPredefinedQuery(selectedQuery) {
             return "";
     }
 }
-
 document.getElementById("runQueryButton").addEventListener("click", function () {
     runQuery();
 });
-
 document.getElementById("runPredefinedQueryButton").addEventListener("click", function () {
     runPredefinedQuery();
 });
-
 $("#predefinedQuery").change(function () {
     updateSQLQuery();
 });
