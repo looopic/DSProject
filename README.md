@@ -40,7 +40,7 @@ The style-file will also be automatically downloaded if it doesn't exist in the 
 Before you're able to run the web-app, you need to enter your database credentials into the code.
 
 > os.environ["DB_NAME"] = ""
-> 
+
 > os.environ["DB_USERNAME"] = ""
-> 
+
 > os.environ["DB_PASSWORD"] = ""
