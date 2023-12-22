@@ -7,9 +7,9 @@ import geopandas as gpd
 import wikipedia
 
 # Set up environment variables
-os.environ["DB_NAME"] = "dsc_project"
-os.environ["DB_USERNAME"] = "postgres"
-os.environ["DB_PASSWORD"] = "MotorolaV500."
+os.environ["DB_NAME"] = ""
+os.environ["DB_USERNAME"] = ""
+os.environ["DB_PASSWORD"] = ""
 
 
 app = Flask(__name__)
