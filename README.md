@@ -37,7 +37,7 @@ The style-file will also be automatically downloaded if it doesn't exist in the 
 ***Keep the size of the osm-file in mind. An import and the refreshing of the views can take several hours up to days!***
 
 ## Running the Web-App
-Before you're able to run the web-app, you need to enter your database credentials into the code.
+Before you're able to run the web-app, you need to enter your database credentials into the code (app.py)
 
 > os.environ["DB_NAME"] = ""
 
