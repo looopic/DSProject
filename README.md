@@ -35,3 +35,10 @@ If you don't specify anything, it will try to connect to the database "gisdb" wi
 The style-file will also be automatically downloaded if it doesn't exist in the download folder.
 
 ***Keep the size of the osm-file in mind. An import and the refreshing of the views can take several hours up to days!***
+
+## Running the Web-App
+Before you're able to run the web-app, you need to enter your database credentials into the code.
+
+> os.environ["DB_NAME"] = ""
+> os.environ["DB_USERNAME"] = ""
+> os.environ["DB_PASSWORD"] = ""
