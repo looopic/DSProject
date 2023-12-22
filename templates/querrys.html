@@ -14,17 +14,18 @@
     <nav>
         <a href="{{ url_for('index') }}">Country</a>
         <a href="{{ url_for('querrys') }}">Queries</a>
-        <a href="about.html">About</a>
+        <a href="{{ url_for('about')}}">About</a>
     </nav>
 
     <h1>Database Queries</h1>
-    <br>
     <h2>Predefined Searches</h2>
     <div>
         <div>
             <form>
-                <label for="predefinedQuery">Choose a predefined query:</label>
                 <!-- Dropdown to choose one of the predefined searches -->
+                <label for="predefinedQuery">
+                    <h4>Choose a predefined query:</h4>
+                </label>
                 <select name="predefinedQuery" id="predefinedQuery">
                     <option value="historicalChimneys">Historical Chimneys</option>
                     <option value="commercialBuildings">Commercial Buildings</option>
@@ -37,20 +38,22 @@
         </div>
         <br>
         <div>
-            <h4>Selected Query:</h4>
             <!-- Textarea to show the SQL-querry of the selected predefined search in the dropdown menu -->
-            <label for="selectedQueryDisplay">Selected Query:</label>
+            <label for="selectedQueryDisplay">
+                <h4>Selected Query:</h4>
+            </label>
             <textarea id="selectedQueryDisplay" rows="5" readonly></textarea>
         </div>
     </div>
     <br>
     <br>
     <h2>Individual Query</h2>
-    <br>
     <h3>Search for different amenities</h3>
     <form>
         <!-- Load all unique values of the amenities and show it to select one or more values -->
-        <label for="amenity">Choose amenity:</label>
+        <label for="amenity">
+            <h4>Choose amenity:</h4>
+        </label>
         <select name="amenity" id="amenity" multiple>
             {% for value in amenity_values %}
             <option value="{{ value[0] }}">{{ value[0] }}</option>
@@ -61,13 +64,14 @@
         <input type="button" value="Add" onclick="addAmenity()">
         <br>
         <!-- Selected amenities will be displayed here -->
-        <label for="selectedAmenities">Selected Amenities:</label>
+        <label for="selectedAmenities">
+            <h4>Selected Amenities:</h4>
+        </label>
         <select name="selectedAmenities" id="selectedAmenities" multiple>
         </select>
         <br>
         <!-- Button to remove the selected amenity value or values from selected amenities -->
         <input type="button" value="Remove" onclick="removeAmenity()">
-        <br>
         <!-- Button to remove all amenity values from selected amenities -->
         <input type="button" value="Remove All" onclick="removeAllAmenities()">
         <br>
@@ -75,9 +79,10 @@
         <input type="button" value="Run Query" onclick="runQuery()">
     </form>
 
-    <h2>SQL Query</h2>
     <!-- Textarea to show the SQL-querry based on the selected amenities -->
-    <label for="sqlQuery">SQL Query:</label>
+    <label for="sqlQuery">
+        <h4>SQL Query:</h4>
+    </label>
     <textarea id="sqlQuery" rows="5" readonly></textarea>
 
     <h2>Search Results</h2>
@@ -86,11 +91,10 @@
     </table>
 
     <script type="text/javascript" src="{{ url_for('static', filename='query.js') }}"></script>
-
     <script>
         $(document).ready(function () {
             // Run the function on page load
-            runPredefinedQuery();
+            updatePredefinedQuery();
 
             // Run the function when the selected amenities change
             $("#selectedAmenities").change(function () {
@@ -99,7 +103,7 @@
 
             // Run the function when the predefined query changes
             $("#predefinedQuery").change(function () {
-                runPredefinedQuery();
+                updatePredefinedQuery();
             });
         });
     </script>
