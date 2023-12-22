@@ -41,6 +41,23 @@ function removeAllAmenities() {
     $("#sqlQuery").val("");
 }
 
+// Function to update the SQL query
+function updateSQLQuery() {
+    var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
+    var selectedAmenities = [];
+    for (var i = 0; i < selectedAmenitiesSelect.options.length; i++) {
+        selectedAmenities.push(selectedAmenitiesSelect.options[i].value);
+    }
+    var query = "SELECT osm_id, building, 'addr:housename', name, ST_Area(way) AS way_area, way FROM planet_osm_polygon";
+    if (selectedAmenities.length > 0) {
+        query += " WHERE amenity IN (";
+        query += selectedAmenities.map(function (amenity) { return "'" + amenity + "'"; }).join(", ");
+        query += ")";
+    }
+    query += ";";
+    $("#sqlQuery").val(query);
+}
+
 // Function to run the query against the database
 function runQuery() {
     var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
@@ -117,7 +134,7 @@ function displayGenericQueryResultsInDOM(results) {
 // Function to run the predefined query against the database
 function runPredefinedQuery() {
     var selectedQuery = document.getElementById("predefinedQuery").value;
-    var predefinedQuery = getPredefinedQuery(selectedQuery);  // Hier wird die Funktion verwendet, um die vordefinierte Abfrage zu erhalten
+    var predefinedQuery = getPredefinedQuery(selectedQuery);
 
     $.ajax({
         type: "POST",
@@ -126,7 +143,7 @@ function runPredefinedQuery() {
         data: JSON.stringify({ selectedQuery: selectedQuery }),
         success: function (response) {
             displayGenericQueryResultsInDOM(response);
-            document.getElementById("selectedQueryDisplay").value = predefinedQuery;  // Anzeigen der vordefinierten Abfrage im Feld
+            document.getElementById("selectedQueryDisplay").value = predefinedQuery;
         },
         error: function (error) {
             console.error("Error:", error);
@@ -134,21 +151,11 @@ function runPredefinedQuery() {
     });
 }
 
-// Function to update the SQL query
-function updateSQLQuery() {
-    var selectedAmenitiesSelect = document.getElementById("selectedAmenities");
-    var selectedAmenities = [];
-    for (var i = 0; i < selectedAmenitiesSelect.options.length; i++) {
-        selectedAmenities.push(selectedAmenitiesSelect.options[i].value);
-    }
-    var query = "SELECT osm_id, building, 'addr:housename', name, ST_Area(way) AS way_area, way FROM planet_osm_polygon";
-    if (selectedAmenities.length > 0) {
-        query += " WHERE amenity IN (";
-        query += selectedAmenities.map(function (amenity) { return "'" + amenity + "'"; }).join(", ");
-        query += ")";
-    }
-    query += ";";
-    $("#sqlQuery").val(query);
+// Function to update the predefined query display based on the selected value
+function updatePredefinedQuery() {
+    var selectedQuery = document.getElementById("predefinedQuery").value;
+    var predefinedQuery = getPredefinedQuery(selectedQuery);
+    document.getElementById("selectedQueryDisplay").value = predefinedQuery;
 }
 
 // Function to get the predefined query
@@ -171,5 +178,5 @@ document.getElementById("runPredefinedQueryButton").addEventListener("click", fu
     runPredefinedQuery();
 });
 $("#predefinedQuery").change(function () {
-    updateSQLQuery();
+    updatePredefinedQuery();
 });
